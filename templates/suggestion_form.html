@@ -5,12 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Suggestion Box</title>
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            display: flex;
         }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #333;
+            color: white;
+            width: 250px;
+            padding: 20px;
+            height: 100vh;
+            position: fixed;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .sidebar a {
+            color: #bbb;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+            color: white;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: 270px; /* Space for sidebar */
+            padding: 20px;
+            flex-grow: 1;
+        }
+
         .suggestion-box {
             background: white;
             padding: 30px;
@@ -20,19 +66,23 @@
             margin: auto;
             transition: box-shadow 0.3s ease;
         }
+
         .suggestion-box:hover {
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
         }
+
         h2 {
             text-align: center;
             color: #333;
             margin-bottom: 20px;
         }
+
         label {
             display: block;
             margin: 10px 0 5px;
             font-weight: bold;
         }
+
         textarea {
             width: 100%;
             height: 120px;
@@ -42,6 +92,7 @@
             resize: none;
             font-size: 16px;
         }
+
         select, input[type="text"], input[type="email"] {
             width: 100%;
             padding: 10px;
@@ -50,15 +101,18 @@
             border-radius: 4px;
             font-size: 16px;
         }
+
         .rating {
             display: flex;
             justify-content: space-between;
             margin: 10px 0;
         }
+
         .rating label {
             margin-right: 10px;
             font-weight: normal;
         }
+
         button {
             background-color: #28a745;
             color: white;
@@ -70,56 +124,105 @@
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
+
         button:hover {
             background-color: #218838;
         }
+
+        /* Toggle Button Styles */
+        .toggle-btn {
+            position: absolute;
+            width: 40px;
+            top: 20px;
+            left: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 1000; /* Ensure it is above other elements */
+        }
+
+        /* Responsive Design */
         @media (max-width: 600px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
             .suggestion-box {
                 padding: 20px;
             }
+
             h2 {
                 font-size: 24px;
             }
+
             button {
                 padding: 10px;
             }
         }
     </style>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+    </script>
 </head>
 <body>
 
-<div class="suggestion-box">
-    <h2>Suggestion Box</h2>
-    <form id="suggestionForm" action="{% url 'suggestion' %}" method="post">
-        {% csrf_token %}
-        <label for="suggestion">Your Suggestion:</label>
-        <textarea id="suggestion" name="suggestion" required placeholder="Type your suggestion here..."></textarea>
 
-        <label for="name">Your Name (optional):</label>
-        <input type="text" id="name" name="name" placeholder="Enter your name">
+    <button class="toggle-btn" onclick="toggleSidebar()">>></button>
+<div class="sidebar">
+    
+    <h2>Profile </h2>
+    <a href="#suggestions">My Suggestions</a>
+    <a href="#settings">Settings</a>
+    <a href="#logout">Logout</a>
+    
+</div>
 
-        <label for="email">Your Email (optional):</label>
-        <input type="email" id="email" name="email" placeholder="Enter your email">
+<div class="main-content">
+    <div class="suggestion-box">
+        <h2>Suggestion Box</h2>
+        <form id="suggestionForm" action="{% url 'suggestion' %}" method="post">
+            {% csrf_token %}
+            <label for="suggestion">Your Suggestion:</label>
+            <textarea id="suggestion" name="suggestion" required placeholder="Type your suggestion here..."></textarea>
 
-        <label for="category">Category:</label>
-        <select id="category" name="category">
-            <option value="general">General Feedback</option>
-            <option value="product">Product Improvement</option>
-            <option value="service">Service Feedback</option>
-            <option value="website">Website Suggestion</option>
-        </select>
+            <label for="name">Your Name (optional):</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name">
 
-        <div class="rating">
-            <label>Rate your suggestion:</label>
-            <input type="radio" name="rating" value="1" required> 1
-            <input type="radio" name="rating" value="2"> 2
-            <input type="radio" name="rating" value="3"> 3
-            <input type="radio" name="rating" value="4"> 4
-            <input type="radio" name="rating" value="5"> 5
-        </div>
+            <label for="email">Your Email (optional):</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email">
 
-        <button type="submit">Submit Suggestion</button>
-    </form>
+            <label for="category">Category:</label>
+            <select id="category" name="category">
+                <option value="general">General Feedback</option>
+                <option value="product">Product Improvement</option>
+                <option value="service">Service Feedback</option>
+                <option value="website">Website Suggestion</option>
+            </select>
+
+            <div class="rating">
+                <label>Rate your suggestion:</label>
+                <input type="radio" name="rating" value="1" required> 1
+                <input type="radio" name="rating" value="2"> 2
+                <input type="radio" name="rating" value="3"> 3
+                <input type="radio" name="rating" value="4"> 4
+                <input type="radio" name="rating" value="5"> 5
+            </div>
+
+            <button type="submit">Submit Suggestion</button>
+        </form>
+    </div>
 </div>
 
 </body>
